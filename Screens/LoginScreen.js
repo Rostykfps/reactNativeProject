@@ -12,14 +12,14 @@ export const LoginScreen = () => {
     <View style={styles.container}>
       <ImageBackground
         style={styles.backgroundImage}
-        source={require('../assets/images/photo_bg.jpg')}
+        source={require('../assets/images/photo-bg.jpg')}
       >
         <View style={styles.registrationForm}>
           {/* <View style={styles.addPhoto}>
             <TouchableOpacity style={{ position: 'relative' }}>
               <Image
                 style={styles.addBtn}
-                source={require('../assets/images/add_btn.png')}
+                source={require('../assets/images/add-btn.png')}
               />
             </TouchableOpacity>
           </View> */}

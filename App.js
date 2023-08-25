@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { RegistrationScreen } from './Screens/RegistrationScreen';
 import { LoginScreen } from './Screens/LoginScreen';
 import { useFonts } from 'expo-font';
+import { PostsScreen } from './Screens/PostsScreen';
 
 export default function App() {
   console.log('object :>> ');
@@ -19,7 +20,9 @@ export default function App() {
 
   return (
     <>
-      <RegistrationScreen />
+      {/* <RegistrationScreen /> */}
+      {/* <LoginScreen /> */}
+      <PostsScreen />
     </>
   );
 }
