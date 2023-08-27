@@ -28,12 +28,14 @@ export const LoginScreen = () => {
           <View style={{ width: '100%' }}>
             <TextInput
               style={{ ...styles.input, marginBottom: 16 }}
+              keyboardType="email-address"
               placeholderTextColor="#BDBDBD"
               placeholder="Адреса електронної пошти"
             />
             <View>
               <TextInput
                 style={styles.input}
+                secureTextEntry={true}
                 placeholderTextColor="#BDBDBD"
                 placeholder="Пароль"
               />

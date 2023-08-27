@@ -20,45 +20,41 @@ export const PostsScreen = () => {
           <TouchableOpacity style={styles.arrowWrapper}>
             <SvgArrowLeft />
           </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 17,
-              fontFamily: 'Roboto-Medium',
-            }}
-          >
-            Створити публікацію
-          </Text>
+          <Text style={styles.title}>Створити публікацію</Text>
         </View>
       </View>
       <View style={{ paddingLeft: 16, paddingRight: 16 }}>
-        <View>
-          <View>
+        <View style={styles.photoWrapper}>
+          <TouchableOpacity style={styles.iconWrapper}>
             <SvgCameraIcon />
-          </View>
+          </TouchableOpacity>
         </View>
-        <Text>Завантажте фото</Text>
-        <View>
-          <TextInput placeholder="Назва..." />
-          <View>
-            <SvgMapPin />
-            <TextInput placeholder="Місцевість..." />
+
+        <Text style={styles.text}>Завантажте фото</Text>
+        <TextInput
+          style={styles.inputName}
+          placeholderTextColor="#BDBDBD"
+          placeholder="Назва..."
+        />
+        <View style={{ marginTop: 16, paddingTop: 10 }}>
+          <View style={{}}>
+            <SvgMapPin style={styles.locationIcon} />
           </View>
+          <TextInput
+            style={styles.inputLocation}
+            placeholderTextColor="#BDBDBD"
+            placeholder="Місцевість..."
+          />
         </View>
         <TouchableOpacity>
-          <Text>Опубліковати</Text>
+          <Text style={styles.submitBtn}>Опубліковати</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <SvgTrash />
-        </TouchableOpacity>
+        <View style={{ alignItems: 'center' }}>
+          <TouchableOpacity style={styles.trashBtn}>
+            <SvgTrash />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View
-        style={{
-          width: 100,
-          height: 100,
-          borderBottomColor: 'black',
-          borderWidth: 1,
-        }}
-      ></View>
     </View>
   );
 };
@@ -66,27 +62,22 @@ export const PostsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingLeft: 16,
-    paddingRight: 16,
+    // paddingLeft: 16,
+    // paddingRight: 16,
   },
   header: {
     height: 88,
     paddingTop: 44,
-    // borderWidth: 1,
-    // borderColor: '#000',
-    // flexDirection: 'column',
-    // alignItems: 'flex-end',
-    // justifyContent: 'center',
-    // position: 'relative',
-    // elevation: 1,
-    borderWidth: 1,
+    elevation: 1,
     // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 0.5 },
-    // borderBottomColor: 'rgba(0, 0, 0, 0.3)',
-    // borderBottomColor: 'black',
+    shadowOffset: { width: 0, height: 0.5 },
     // shadowOpacity: 0.3,
     // shadowRadius: 0,
-    borderBottomColor: 'black',
+    // borderBottomColor: '#000',
+
+    borderBottomColor: 'rgba(0, 0, 0, 0.3)',
+    // borderBottomWidth: 0.5,
+    borderRadius: 0,
   },
 
   headerWrapper: {
@@ -105,5 +96,82 @@ const styles = StyleSheet.create({
     height: 44,
     textAlign: 'center',
   },
-  title: {},
+  title: {
+    fontSize: 17,
+    fontFamily: 'Roboto-Medium',
+  },
+
+  photoWrapper: {
+    height: 240,
+    marginTop: 32,
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    marginTop: 8,
+    color: '#BDBDBD',
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular',
+  },
+  inputName: {
+    height: 50,
+    marginTop: 32,
+    color: '#212121',
+    fontSize: 16,
+    fontFamily: 'Roboto-Medium',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+  },
+
+  inputLocation: {
+    height: 50,
+    paddingLeft: 28,
+    color: '#212121',
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+  },
+  locationIcon: {
+    position: 'absolute',
+    top: 13,
+  },
+  submitBtn: {
+    textAlign: 'center',
+    backgroundColor: '#F6F6F6',
+    borderRadius: 100,
+    width: '100%',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    marginTop: 32,
+    marginBottom: 16,
+    color: '#BDBDBD',
+    fontFamily: 'Roboto-Regular',
+    fontSize: 16,
+  },
+
+  trashBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F6F6F6',
+    borderRadius: 100,
+    width: 70,
+    paddingHorizontal: 23,
+    paddingVertical: 8,
+    marginTop: 32,
+    marginBottom: 16,
+    color: '#BDBDBD',
+  },
 });
