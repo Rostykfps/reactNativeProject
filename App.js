@@ -6,8 +6,6 @@ import { useFonts } from 'expo-font';
 import { PostsScreen } from './Screens/PostsScreen';
 
 export default function App() {
-  console.log('object :>> ');
-
   const [fontsLoaded] = useFonts({
     'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
@@ -21,8 +19,8 @@ export default function App() {
   return (
     <>
       {/* <RegistrationScreen /> */}
-      {/* <LoginScreen /> */}
-      <PostsScreen />
+      <LoginScreen />
+      {/* <PostsScreen /> */}
     </>
   );
 }

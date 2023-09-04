@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
 import SvgCameraIcon from '../assets/svg/SvgCameraIcon';
 import SvgMapPin from '../assets/svg/SvgMapPin';
