@@ -1,15 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { Controller, useForm } from 'react-hook-form';
 import {
-  ImageBackground,
-  Keyboard,
-  KeyboardAvoidingView,
   StyleSheet,
   Text,
+  View,
+  Image,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  Keyboard,
+  ScrollView,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  ImageBackground,
 } from 'react-native';
 
 export const LoginScreen = () => {
@@ -30,126 +36,166 @@ export const LoginScreen = () => {
   const onRegistration = data => {
     Keyboard.dismiss();
 
-    console.log(data);
-
     reset();
   };
 
   const toggleSecureTextEntry = () => {
     setIsSecure(!isSecure);
   };
+
+  const [shift, setShift] = useState(false);
+  const [position] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    const listenerShow = Keyboard.addListener('keyboardDidShow', () => {
+      setShift(true);
+    });
+    const listenerHide = Keyboard.addListener('keyboardDidHide', () => {
+      setShift(false);
+    });
+
+    return () => {
+      listenerShow.remove();
+      listenerHide.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    Animated.timing(position, {
+      toValue: shift ? 200 : 144,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  }, [shift]);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.backgroundImage}
-          source={require('../assets/images/photo-bg.jpg')}
-        >
-          <View style={styles.registrationForm}>
-            <Text style={styles.title}>Увійти</Text>
-
-            <View style={{ width: '100%' }}>
-              <KeyboardAvoidingView
-                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <ImageBackground
+            style={styles.backgroundImage}
+            source={require('../assets/images/photo-bg.jpg')}
+          >
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContainer}
+              bounces={false}
+            >
+              <Animated.View
+                style={[styles.formWrapper, { paddingBottom: position }]}
               >
-                <Controller
-                  control={control}
-                  rules={{
-                    required: "Це обов'язкове поле",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      message: 'Введіть коректну адресу електронної пошти',
-                    },
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={{ ...styles.input, marginBottom: 16 }}
-                      keyboardType="email-address"
-                      placeholderTextColor="#BDBDBD"
-                      placeholder="Адреса електронної пошти"
-                      onBlur={onBlur}
-                      value={value}
-                      onChangeText={onChange}
-                    />
-                  )}
-                  name="email"
-                />
+                <Text style={styles.title}>Увійти</Text>
 
-                {errors.email && (
-                  <Text style={{}}>{errors.email?.message}</Text>
-                )}
-                <View>
+                <View style={{ width: '100%' }}>
                   <Controller
                     control={control}
                     rules={{
                       required: "Це обов'язкове поле",
-                      minLength: {
-                        value: 8,
-                        message: 'Пароль повинен містити щонайменше 8 символів',
-                      },
                       pattern: {
                         value:
-                          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                        message:
-                          'Пароль повинен містити хоча б одну велику літеру, одну маленьку літеру, одну цифру і один спеціальний символ',
+                          /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                        message: 'Введіть коректну адресу електронної пошти',
                       },
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
-                      <>
-                        <TextInput
-                          style={{ ...styles.input }}
-                          secureTextEntry={isSecure}
-                          placeholderTextColor="#BDBDBD"
-                          placeholder="Пароль"
-                          onBlur={onBlur}
-                          value={value}
-                          onChangeText={onChange}
-                        />
-                        <TouchableOpacity>
-                          <Text
-                            style={styles.showPassword}
-                            onPress={toggleSecureTextEntry}
-                          >
-                            {isSecure ? 'Показати' : 'Приховати'}
-                          </Text>
-                        </TouchableOpacity>
-                      </>
+                      <TextInput
+                        style={{ ...styles.input, marginBottom: 16 }}
+                        keyboardType="email-address"
+                        placeholderTextColor="#BDBDBD"
+                        placeholder="Адреса електронної пошти"
+                        onBlur={onBlur}
+                        value={value}
+                        onChangeText={onChange}
+                      />
                     )}
-                    name="password"
+                    name="email"
                   />
 
-                  {errors.password && (
-                    <Text style={{}}>{errors.password?.message}</Text>
+                  {errors.email && (
+                    <Text style={{}}>{errors.email?.message}</Text>
                   )}
+                  <View>
+                    <Controller
+                      control={control}
+                      rules={{
+                        required: "Це обов'язкове поле",
+                        minLength: {
+                          value: 8,
+                          message:
+                            'Пароль повинен містити щонайменше 8 символів',
+                        },
+                        pattern: {
+                          value:
+                            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                          message:
+                            'Пароль повинен містити хоча б одну велику літеру, одну маленьку літеру, одну цифру і один спеціальний символ',
+                        },
+                      }}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <>
+                          <TextInput
+                            style={{ ...styles.input }}
+                            secureTextEntry={isSecure}
+                            placeholderTextColor="#BDBDBD"
+                            placeholder="Пароль"
+                            onBlur={onBlur}
+                            value={value}
+                            onChangeText={onChange}
+                          />
+                          <TouchableOpacity>
+                            <Text
+                              style={styles.showPassword}
+                              onPress={toggleSecureTextEntry}
+                            >
+                              {isSecure ? 'Показати' : 'Приховати'}
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
+                      name="password"
+                    />
+
+                    {errors.password && (
+                      <Text style={{}}>{errors.password?.message}</Text>
+                    )}
+                  </View>
                 </View>
-              </KeyboardAvoidingView>
-            </View>
 
-            <TouchableOpacity style={{ width: '100%' }}>
-              <Text
-                style={styles.registerBtn}
-                onPress={handleSubmit(onRegistration)}
-              >
-                Увійти
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={{ width: '100%' }}>
+                  <Text
+                    style={styles.registerBtn}
+                    onPress={handleSubmit(onRegistration)}
+                  >
+                    Увійти
+                  </Text>
+                </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.text}>Немає акаунту? </Text>
-              <TouchableOpacity>
-                <Text
-                  style={{ ...styles.text, textDecorationLine: 'underline' }}
-                >
-                  Зареєструватися
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ImageBackground>
-      </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.text}>Немає акаунту? </Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{
+                        ...styles.text,
+                        textDecorationLine: 'underline',
+                      }}
+                    >
+                      Зареєструватися
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </ScrollView>
+          </ImageBackground>
+        </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
+
+const screenSize = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
@@ -158,47 +204,28 @@ const styles = StyleSheet.create({
 
   backgroundImage: {
     flex: 1,
-    justifyContent: 'flex-end',
+    top: 0,
+    position: 'absolute',
+    height: screenSize.height,
+    width: screenSize.width,
     resizeMode: 'cover',
   },
-
-  registrationForm: {
+  scrollViewContainer: {
+    minHeight: screenSize.height,
+    justifyContent: 'flex-end',
+  },
+  formWrapper: {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingTop: 92,
+    paddingTop: 32,
     paddingRight: 16,
     paddingLeft: 16,
-    paddingBottom: 78,
+    paddingBottom: 144,
   },
-
-  addPhoto: {
-    width: 120,
-    height: 120,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    backgroundColor: '#F6F6F6',
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 16,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    top: -60,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    position: 'absolute',
-  },
-  addBtn: {
-    position: 'absolute',
-    top: 81,
-    left: 107,
-  },
-
   title: {
     marginBottom: 33,
     color: '#212121',
@@ -220,7 +247,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: '100%',
   },
-
   showPassword: {
     color: '#1B4371',
     fontFamily: 'Roboto-Regular',
@@ -229,7 +255,6 @@ const styles = StyleSheet.create({
     right: 16,
     bottom: 15,
   },
-
   registerBtn: {
     textAlign: 'center',
     backgroundColor: '#FF6C00',
