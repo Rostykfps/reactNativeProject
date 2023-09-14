@@ -17,6 +17,7 @@ import {
   Animated,
   ImageBackground,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export const RegistrationScreen = () => {
   const [isSecure, setIsSecure] = useState(true);
@@ -34,8 +35,12 @@ export const RegistrationScreen = () => {
     },
   });
 
+  const navigation = useNavigation();
+
   const onRegistration = data => {
     Keyboard.dismiss();
+
+    navigation.navigate('Home');
 
     reset();
   };
@@ -212,7 +217,12 @@ export const RegistrationScreen = () => {
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.text}>Вже є акаунт? </Text>
                   <TouchableOpacity>
-                    <Text style={styles.text}>Увійти</Text>
+                    <Text
+                      style={styles.text}
+                      onPress={() => navigation.navigate('Login')}
+                    >
+                      Увійти
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </Animated.View>
