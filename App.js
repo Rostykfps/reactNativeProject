@@ -30,7 +30,7 @@ export default function App() {
         initialRouteName="Home"
         screenOptions={{
           cardStyle: { backgroundColor: '#FFF' },
-          headerShown: false,
+          // headerShown: false,
         }}
       >
         <MainStack.Screen
@@ -41,18 +41,20 @@ export default function App() {
         <MainStack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
         />
-        <MainStack.Screen
-          name="Posts"
-          component={PostsScreen}
-          options={{ headerTitle: '' }}
-        />
+        <MainStack.Screen name="Posts" component={PostsScreen} />
         <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} />
         <MainStack.Screen name="Comment" component={CommentsScreen} />
         <MainStack.Screen name="Profile" component={ProfileScreen} />
         <MainStack.Screen name="Map" component={MapScreen} />
-        <MainStack.Screen name="Home" component={Home} />
+        <MainStack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
       </MainStack.Navigator>
     </NavigationContainer>
   );

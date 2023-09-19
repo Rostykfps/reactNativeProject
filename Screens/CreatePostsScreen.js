@@ -14,14 +14,14 @@ import SvgTrash from '../assets/svg/SvgTrash';
 export const CreatePostsScreen = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.arrowWrapper}>
             <SvgArrowLeft />
           </TouchableOpacity>
           <Text style={styles.title}>Створити публікацію</Text>
         </View>
-      </View>
+      </View> */}
       <ScrollView>
         <View style={{ paddingLeft: 16, paddingRight: 16 }}>
           <View style={styles.photoWrapper}>
