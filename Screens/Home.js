@@ -10,6 +10,7 @@ import { TouchableOpacity } from 'react-native';
 import SvgLogOut from '../assets/svg/SvgLogOut';
 import { useNavigation } from '@react-navigation/native';
 import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
+import { DefaultPostsScreen } from './DefaultPostScreen';
 
 const Tabs = createBottomTabNavigator();
 
@@ -18,45 +19,31 @@ export const Home = () => {
 
   return (
     <Tabs.Navigator
+      // initialRouteName="Posts"
       screenOptions={{
+        cardStyle: { backgroundColor: '#FFF' },
+        // headerShown: false,
         tabBarStyle: {
-          flexDirection: 'row',
-          justifyContent: 'center',
-          // height: 83,
-          // height: 71,
-          // paddingTop: 9,
-          // paddingBottom: 34,
-          // paddingBottom: 22,
-          paddingLeft: 82,
-          paddingRight: 81,
-          elevation: 1,
-          shadowOffset: { width: 0, height: 0.5 },
-          borderTopColor: 'rgba(0, 0, 0, 0.3)',
-          borderRadius: 0,
+          // borderBottomWidth: 0.5,
+          // borderBottomColor: 'rgba(0, 0, 0, 0.3)',
+          // boxShadow: '0px 0.5px 0px rgba(0, 0, 0, 0.3)',
           borderTopWidth: 0.5,
-          shadowColor: '#000',
-          shadowOpacity: 0.3,
-          shadowRadius: 0,
-          borderRadius: 0,
-        },
-        tabBarItem: {
-          width: 40,
-          height: 100,
-        },
-        tabStyle: { width: 70 },
-        shadow: {
-          shadowColor: '#000',
+          borderTopColor: 'rgba(0, 0, 0, 0.3)',
+          shadowColor: 'rgba(0, 0, 0, 0.3)',
+          boxShadow: '0px 0.5px 0px rgba(0, 0, 0, 0.3)',
           shadowOffset: { width: 0, height: 0.5 },
-          shadowOpacity: 0.3,
+          shadowOpacity: 1,
           shadowRadius: 0,
           elevation: 1,
         },
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
         name="Posts"
         component={PostsScreen}
         options={{
+          headerShown: true,
           title: 'Публікації',
           headerStyle: {
             backgroundColor: '#fff',
@@ -70,6 +57,7 @@ export const Home = () => {
             borderBottomColor: '#000',
 
             borderBottomColor: 'rgba(0, 0, 0, 0.3)',
+            boxShadow: '0px 0.5px 0px rgba(0, 0, 0, 0.3)',
             borderBottomWidth: 0.5,
             borderRadius: 0,
           },
@@ -77,6 +65,7 @@ export const Home = () => {
           headerTitleStyle: {
             fontSize: 17,
             fontFamily: 'Roboto-Medium',
+            lineHeight: 22,
           },
           headerTitleAlign: 'center',
           headerRight: () => (
@@ -84,6 +73,7 @@ export const Home = () => {
               <SvgLogOut onPress={() => navigation.navigate('Login')} />
             </TouchableOpacity>
           ),
+          // tabBarStyle: { display: 'none' },
           tabBarIcon: () => {
             return (
               <View
@@ -104,6 +94,7 @@ export const Home = () => {
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
+          headerShown: true,
           title: 'Створити публікацію',
           backgroundColor: '#fff',
           headerStyle: {
@@ -125,6 +116,7 @@ export const Home = () => {
           headerTitleStyle: {
             fontSize: 17,
             fontFamily: 'Roboto-Medium',
+            lineHeight: 22,
           },
           headerTitleAlign: 'center',
           headerLeft: () => (
@@ -136,14 +128,12 @@ export const Home = () => {
             return <SvgNewPost />;
           },
           tabBarLabel: () => null,
-          // headerShown: false,
           tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
         name="Profile"
         component={ProfileScreen}
-        tabB
         options={{
           tabBarIcon: () => {
             return (

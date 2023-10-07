@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config":{
+        "googleMaps":{
+          "apiKey": "AIzaSyBKUZKEd3QQvfXGTGssm06pWrV6aNioLe0"
+        }
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "android.config.googleMaps.apiKey": "AIzaSyBKUZKEd3QQvfXGTGssm06pWrV6aNioLe0"
   }
 }

@@ -45,11 +45,11 @@ export default function App() {
             headerShown: false,
           }}
         />
-        <MainStack.Screen name="Posts" component={PostsScreen} />
-        <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} />
-        <MainStack.Screen name="Comment" component={CommentsScreen} />
-        <MainStack.Screen name="Profile" component={ProfileScreen} />
-        <MainStack.Screen name="Map" component={MapScreen} />
+        {/* <MainStack.Screen name="Posts" component={PostsScreen} /> */}
+        {/* <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} /> */}
+        {/* <MainStack.Screen name="Comments" component={CommentsScreen} /> */}
+        {/* <MainStack.Screen name="Profile" component={ProfileScreen} /> */}
+        {/* <MainStack.Screen name="Map" component={MapScreen} /> */}
         <MainStack.Screen
           name="Home"
           component={Home}

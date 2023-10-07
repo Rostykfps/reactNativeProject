@@ -2,9 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export const CommentsScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>CommentsScreen</Text>
-    </View>
+    <View style={styles.container}>{/* <Text>CommentsScreen</Text> */}</View>
   );
 };
 
@@ -15,5 +13,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 16,
     paddingRight: 16,
+    backgroundColor: '#FFF',
   },
 });
