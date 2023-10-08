@@ -9,7 +9,9 @@ import { CreatePostsScreen } from './Screens/CreatePostsScreen';
 import { ProfileScreen } from './Screens/ProfileScreen';
 import { CommentsScreen } from './Screens/CommentsScreen';
 import { MapScreen } from './Screens/MapScreen';
-import { Home } from './Screens/Home';
+// import { Home } from './Screens/Home';
+import { StatusBar } from 'react-native';
+import Home from './navigation/Home';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -25,37 +27,10 @@ export default function App() {
   const MainStack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <MainStack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          cardStyle: { backgroundColor: '#FFF' },
-          // headerShown: false,
-        }}
-      >
-        <MainStack.Screen
-          name="Registration"
-          component={RegistrationScreen}
-          options={{ headerShown: false }}
-        />
-        <MainStack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        {/* <MainStack.Screen name="Posts" component={PostsScreen} /> */}
-        {/* <MainStack.Screen name="CreatePosts" component={CreatePostsScreen} /> */}
-        {/* <MainStack.Screen name="Comments" component={CommentsScreen} /> */}
-        {/* <MainStack.Screen name="Profile" component={ProfileScreen} /> */}
-        {/* <MainStack.Screen name="Map" component={MapScreen} /> */}
-        <MainStack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        />
-      </MainStack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Home />
+      </NavigationContainer>
+    </>
   );
 }

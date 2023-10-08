@@ -9,7 +9,10 @@ const PostItem = ({ name, image, location, coordinates }) => {
 
   return (
     <View style={{ marginBottom: 34 }}>
-      <Image source={{ uri: image }} style={{ width: '100%', height: 240 }} />
+      <Image
+        source={{ uri: image }}
+        style={{ width: '100%', height: 240, backgroundColor: '#F6F6F6' }}
+      />
       {console.log('image', image)}
       <Text
         style={{
@@ -23,7 +26,11 @@ const PostItem = ({ name, image, location, coordinates }) => {
       </Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Comments')}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('PostStack', { screen: 'Comments' })
+            }
+          >
             <SvgCommentsIcon />
           </TouchableOpacity>
           <Text
@@ -40,7 +47,12 @@ const PostItem = ({ name, image, location, coordinates }) => {
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
             style={{ flexDirection: 'row' }}
-            onPress={() => navigation.navigate('Map', { coordinates })}
+            onPress={() =>
+              navigation.navigate('PostStack', {
+                screen: 'Map',
+                params: { coordinates },
+              })
+            }
           >
             <SvgMapPin />
           </TouchableOpacity>
