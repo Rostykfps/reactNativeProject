@@ -75,25 +75,25 @@ export const LoginScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <View style={styles.container}>
-          <StatusBar style="auto" />
-          <ImageBackground
-            style={styles.backgroundImage}
-            source={require('../assets/images/photo-bg.jpg')}
+      <View style={styles.container}>
+        <StatusBar style="auto" />
+        <ImageBackground
+          style={styles.backgroundImage}
+          source={require('../assets/images/photo-bg.jpg')}
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollViewContainer}
+            bounces={false}
           >
-            <ScrollView
-              contentContainerStyle={styles.scrollViewContainer}
-              bounces={false}
+            <Animated.View
+              style={[styles.formWrapper, { paddingBottom: position }]}
             >
-              <Animated.View
-                style={[styles.formWrapper, { paddingBottom: position }]}
-              >
-                <Text style={styles.title}>Увійти</Text>
+              <Text style={styles.title}>Увійти</Text>
 
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              >
                 <View style={{ width: '100%' }}>
                   <Controller
                     control={control}
@@ -168,35 +168,35 @@ export const LoginScreen = () => {
                     )}
                   </View>
                 </View>
+              </KeyboardAvoidingView>
 
-                <TouchableOpacity style={{ width: '100%' }}>
+              <TouchableOpacity style={{ width: '100%' }}>
+                <Text
+                  style={styles.registerBtn}
+                  onPress={handleSubmit(onLogin)}
+                >
+                  Увійти
+                </Text>
+              </TouchableOpacity>
+
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.text}>Немає акаунту? </Text>
+                <TouchableOpacity>
                   <Text
-                    style={styles.registerBtn}
-                    onPress={handleSubmit(onLogin)}
+                    style={{
+                      ...styles.text,
+                      textDecorationLine: 'underline',
+                    }}
+                    onPress={() => navigation.navigate('Registration')}
                   >
-                    Увійти
+                    Зареєструватися
                   </Text>
                 </TouchableOpacity>
-
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.text}>Немає акаунту? </Text>
-                  <TouchableOpacity>
-                    <Text
-                      style={{
-                        ...styles.text,
-                        textDecorationLine: 'underline',
-                      }}
-                      onPress={() => navigation.navigate('Registration')}
-                    >
-                      Зареєструватися
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </Animated.View>
-            </ScrollView>
-          </ImageBackground>
-        </View>
-      </KeyboardAvoidingView>
+              </View>
+            </Animated.View>
+          </ScrollView>
+        </ImageBackground>
+      </View>
     </TouchableWithoutFeedback>
   );
 };

@@ -29,11 +29,12 @@ export const CreatePostsScreen = () => {
     id: '',
     name: '',
     location: '',
-    imageUri: '',
+    imageUri: null,
     locationCoords: {},
   });
   const [isFormValid, setIsFormValid] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [locationCoords, setLocationCoords] = useState('');
+  const [activeBtn, setActiveBtn] = useState(false);
 
   const navigation = useNavigation();
 
@@ -62,11 +63,11 @@ export const CreatePostsScreen = () => {
       const { uri } = await cameraRef.takePictureAsync();
       setImageUri(uri);
       await MediaLibrary.createAssetAsync(uri);
+
       setFormData({
         ...formData,
         imageUri: uri,
       });
-      console.log('uri :>> ', imageUri);
 
       setCameraVisible(!cameraVisible);
       checkFormValidity();
@@ -77,20 +78,16 @@ export const CreatePostsScreen = () => {
 
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
-    console.log('formData :>> ', formData);
-    // checkFormValidity();
   };
 
   const checkFormValidity = () => {
     const { name, location } = formData;
-    // console.log('formData :>> ', formData);
     if (!cameraVisible && name && location) {
       setIsFormValid(true);
-      // console.log(isFormValid);
+      setActiveBtn(true);
       return;
     }
     setIsFormValid(false);
-    // console.log(isFormValid);
   };
 
   const getLocation = async () => {
@@ -100,22 +97,35 @@ export const CreatePostsScreen = () => {
     }
 
     let location = await Location.getCurrentPositionAsync({});
+
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
-    setLocation(coords);
-    // console.log('location :>> ', location);
+
+    formData.locationCoords = coords;
   };
 
-  const handleSubmit = () => {
-    // const id = uuidv4();
-    // console.log('id :>> ', id);
-    setFormData({ ...formData, id: uuidv4() });
-    getLocation();
-    // console.log('location :>> ', location);
+  const handleClearForm = () => {
+    setFormData({
+      id: '',
+      name: '',
+      location: '',
+      imageUri: '',
+      locationCoords: {},
+    });
+    setImageUri(null);
+    setCameraVisible(true);
+  };
+
+  const handleSubmit = async () => {
+    setActiveBtn(false);
+    await getLocation();
+    const id = uuidv4();
+    formData.id = id;
     navigation.navigate('Posts', { formData });
-    // console.log('test');
+
+    handleClearForm();
   };
 
   return (
@@ -174,13 +184,11 @@ export const CreatePostsScreen = () => {
             <TouchableOpacity style={styles.iconWrapper} onPress={takePhoto}>
               <SvgCameraIcon />
             </TouchableOpacity>
-            {/* </Camera> */}
           </View>
           <Text style={styles.text}>
             {cameraVisible ? `Завантажте фото` : `Редагувати фото`}
           </Text>
 
-          {/* <Text style={styles.text}>Завантажте фото</Text> */}
           <TextInput
             style={styles.inputName}
             placeholderTextColor="#BDBDBD"
@@ -205,7 +213,7 @@ export const CreatePostsScreen = () => {
           <TouchableOpacity disabled={!isFormValid} onPress={handleSubmit}>
             <Text
               style={
-                isFormValid
+                isFormValid && activeBtn
                   ? { ...styles.submitBtn, ...styles.activeSubmitBtn }
                   : { ...styles.submitBtn, ...styles.inActiveSubmitBtn }
               }
@@ -214,7 +222,7 @@ export const CreatePostsScreen = () => {
             </Text>
           </TouchableOpacity>
           <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.trashBtn}>
+            <TouchableOpacity style={styles.trashBtn} onPress={handleClearForm}>
               <SvgTrash />
             </TouchableOpacity>
           </View>
