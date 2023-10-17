@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { authSignUpUser, signUpUser } from '../redux/auth/authOperation';
+import { signUpUser } from '../redux/auth/authOperation';
 import { auth, storage } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -141,7 +141,7 @@ export const RegistrationScreen = () => {
         // const picture = await fetch(avatar.replace('file:///', ''));
         // console.log('picture :>> ', picture);
         // console.log('test');
-        const response = await fetch(avatar);
+        // const response = await fetch(avatar);
         // const response = await fetch(
         //   'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FreactNativeProject-227d88aa-d0a8-4283-8e95-dfc92a59b734/ImagePicker/c33545be-df90-48ea-a857-463f762b2e94.jpeg',
         // );

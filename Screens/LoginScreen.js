@@ -18,6 +18,8 @@ import {
   ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { signInUser } from '../redux/auth/authOperation';
 
 export const LoginScreen = () => {
   const [isSecure, setIsSecure] = useState(true);
@@ -35,10 +37,13 @@ export const LoginScreen = () => {
   });
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onLogin = data => {
     Keyboard.dismiss();
     console.log('Login data :>> ', data);
+    const { email, password } = data;
+    dispatch(signInUser({ email, password }));
 
     navigation.navigate('Posts');
 
@@ -68,7 +73,7 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     Animated.timing(position, {
-      toValue: shift ? 200 : 144,
+      toValue: shift ? 200 : 80,
       duration: 300,
       useNativeDriver: false,
     }).start();

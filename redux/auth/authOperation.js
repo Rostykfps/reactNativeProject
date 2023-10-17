@@ -1,10 +1,12 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
 } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { updateUserProfile } from './authSlice';
+import { Alert } from 'react-native';
 
 export const signUpUser =
   ({ login, email, password, avatar }) =>
@@ -39,12 +41,22 @@ export const signUpUser =
     }
   };
 
-export const signInUser = ({ email, password }) => {
-  async dispatch => {
+export const signInUser =
+  ({ email, password }) =>
+  async () => {
     try {
       await signInWithEmailAndPassword(email, password);
     } catch (error) {
+      Alert.alert('Не вірний email або пароль');
       return error.message;
     }
   };
+
+export const signOutUser = () => async () => {
+  try {
+    await signOut(auth);
+    dispatch(signOut());
+  } catch (error) {
+    return error.message;
+  }
 };

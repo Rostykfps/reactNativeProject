@@ -16,6 +16,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/store';
 import { Text } from 'react-native';
+import AuthStack from './navigation/AuthStack';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -34,7 +35,8 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
         <NavigationContainer>
-          <Home />
+          {/* <Home /> */}
+          <AuthStack />
         </NavigationContainer>
       </PersistGate>
     </Provider>

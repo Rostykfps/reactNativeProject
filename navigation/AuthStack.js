@@ -9,8 +9,8 @@ const Stack = createStackNavigator();
 export default function AuthStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Registration"
-      //   initialRouteName="Login"
+      // initialRouteName="Registration"
+      initialRouteName="Login"
       screenOptions={{
         cardStyle: { backgroundColor: '#FFF' },
         // headerShown: false,
