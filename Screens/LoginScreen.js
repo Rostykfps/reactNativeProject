@@ -38,8 +38,9 @@ export const LoginScreen = () => {
 
   const onLogin = data => {
     Keyboard.dismiss();
+    console.log('Login data :>> ', data);
 
-    navigation.navigate('Home');
+    navigation.navigate('Posts');
 
     reset();
   };

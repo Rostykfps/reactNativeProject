@@ -18,8 +18,20 @@ import {
   ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import { authSignUpUser, signUpUser } from '../redux/auth/authOperation';
+import { auth, storage } from '../firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useDispatch } from 'react-redux';
+// import RNFetchBlob from 'rn-fetch-blob';
+// import RNFS from 'react-native-fs';
 
 export const RegistrationScreen = () => {
+  const [login, setLogin] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [avatar, setAvatar] = useState(null);
   const [isSecure, setIsSecure] = useState(true);
 
   const {
@@ -36,11 +48,41 @@ export const RegistrationScreen = () => {
   });
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const onRegistration = data => {
+  const onRegistration = async data => {
+    const { login, email, password } = data;
     Keyboard.dismiss();
+    console.log(avatar);
 
-    navigation.navigate('Home');
+    try {
+      avatar && (await uploadAvatarToDb(avatar));
+      const newUser = {
+        login,
+        email,
+        password,
+        avatar,
+      };
+      console.log('object1 :>> ', newUser);
+      dispatch(signUpUser(newUser));
+      // dispatch(authSignUpUser(newUser));
+
+      // const newUser = {
+      //   avatarImage: avatar,
+      //   login,
+      //   email,
+      //   password,
+      // };
+      // console.log('object1 :>> ', newUser);
+      // dispatch(authSignUpUser(newUser));
+    } catch (error) {
+      console.log('error :>> ', error);
+      return error.message;
+    }
+
+    console.log('Registration data :>> ', { data });
+
+    navigation.navigate('Posts');
 
     reset();
   };
@@ -74,6 +116,58 @@ export const RegistrationScreen = () => {
     }).start();
   }, [shift]);
 
+  const pickAvatar = async () => {
+    if (avatar) {
+      setAvatar(null);
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
+
+  const uploadAvatarToDb = async avatar => {
+    if (avatar) {
+      console.log('avatar :>> ', avatar);
+      const avatarId = Date.now().toString();
+      try {
+        // const picture = await fetch(avatar.replace('file:///', ''));
+        // console.log('picture :>> ', picture);
+        // console.log('test');
+        const response = await fetch(avatar);
+        // const response = await fetch(
+        //   'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FreactNativeProject-227d88aa-d0a8-4283-8e95-dfc92a59b734/ImagePicker/c33545be-df90-48ea-a857-463f762b2e94.jpeg',
+        // );
+
+        // const file = await response.blob();
+        // const file = await avatar.blob();
+        // const file = await RNFetchBlob.fs.readFile(avatar, 'base64');
+
+        // const file = await RNFS.readFile(avatar, 'base64');
+
+        // console.log('file :>> ', file);
+
+        const storageRef = ref(storage, `avatars/${avatarId}`);
+
+        // await uploadBytes(storageRef, file);
+
+        // const downloadURL = await getDownloadURL(storageRef);
+        // console.log('downloadURL :>> ', downloadURL);
+
+        // return downloadURL;
+      } catch (error) {
+        console.warn('uploadImageToServer: ', error);
+      }
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -94,11 +188,22 @@ export const RegistrationScreen = () => {
                 style={[styles.formWrapper, { paddingBottom: position }]}
               >
                 <View style={styles.addPhoto}>
-                  <TouchableOpacity style={{ position: 'relative' }}>
-                    <Image
-                      style={styles.addBtn}
-                      source={require('../assets/images/add-btn.png')}
-                    />
+                  <Image style={styles.avatar} source={{ uri: avatar }} />
+                  <TouchableOpacity
+                    style={styles.avatarBtnWrapper}
+                    onPress={pickAvatar}
+                  >
+                    {avatar ? (
+                      <Image
+                        style={styles.delBtn}
+                        source={require('../assets/images/del-btn.png')}
+                      />
+                    ) : (
+                      <Image
+                        style={styles.addBtn}
+                        source={require('../assets/images/add-btn.png')}
+                      />
+                    )}
                   </TouchableOpacity>
                 </View>
 
@@ -279,10 +384,32 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     position: 'absolute',
   },
-  addBtn: {
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    // top: -60,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     position: 'absolute',
+  },
+  avatarBtnWrapper: {
+    position: 'absolute',
+    width: 25,
+    height: 25,
     top: 81,
     left: 107,
+    borderRadius: 100,
+  },
+  addBtn: {
+    position: 'absolute',
+    // top: 81,
+    // left: 107,
+  },
+  delBtn: {
+    position: 'absolute',
+    left: -6,
+    top: -6,
   },
 
   title: {

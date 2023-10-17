@@ -12,6 +12,10 @@ import { MapScreen } from './Screens/MapScreen';
 // import { Home } from './Screens/Home';
 import { StatusBar } from 'react-native';
 import Home from './navigation/Home';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/store';
+import { Text } from 'react-native';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -24,13 +28,15 @@ export default function App() {
     return null;
   }
 
-  const MainStack = createStackNavigator();
+  // const MainStack = createStackNavigator();
 
   return (
-    <>
-      <NavigationContainer>
-        <Home />
-      </NavigationContainer>
-    </>
+    <Provider store={store}>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <NavigationContainer>
+          <Home />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
