@@ -23,9 +23,10 @@ export const authSlice = createSlice({
       ...state,
       stateChange: payload.stateChange,
     }),
-    signOut: () => authInitialState,
+    // authSignOut: () => authInitialState,
+    authSignOut: state => ({ ...state, ...authInitialState }),
   },
 });
 
-export const { updateUserProfile, authStateChange, signOut } =
+export const { updateUserProfile, authStateChange, authSignOut } =
   authSlice.actions;

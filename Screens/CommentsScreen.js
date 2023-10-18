@@ -8,28 +8,32 @@ import { TouchableOpacity } from 'react-native';
 import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
 import SvgSendIcon from '../assets/svg/SvgSendIcon';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 export const CommentsScreen = ({ route }) => {
   const { image } = route.params;
   console.log('image2 :>> ', image);
 
+  const { avatar } = useSelector(state => state.auth);
+  console.log('avatar1 :>> ', avatar);
+
   const [comments, setComments] = useState([
     {
-      authorAvatar: '',
+      authorAvatar: null,
       comment:
         'Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!',
       commentDate: '09 червня, 2020 | 08:40',
       owner: false,
     },
     {
-      authorAvatar: '',
+      authorAvatar: avatar,
       comment:
         'A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.',
       commentDate: '09 червня, 2020 | 09:14',
       owner: true,
     },
     {
-      authorAvatar: '',
+      authorAvatar: null,
       comment: 'Thank you! That was very helpful!',
       commentDate: '09 червня, 2020 | 09:20',
       owner: false,
@@ -39,10 +43,10 @@ export const CommentsScreen = ({ route }) => {
 
   const handleAddComment = () => {
     const newComment = {
-      authorAvatar: '',
+      authorAvatar: avatar,
       comment: commentText,
       commentDate: moment().format('DD MMMM, YYYY | HH:mm'),
-      owner: false,
+      owner: true,
     };
     if (!commentText) {
       return;

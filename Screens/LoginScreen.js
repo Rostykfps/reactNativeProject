@@ -45,7 +45,7 @@ export const LoginScreen = () => {
     const { email, password } = data;
     dispatch(signInUser({ email, password }));
 
-    navigation.navigate('Posts');
+    // navigation.navigate('Posts');
 
     reset();
   };

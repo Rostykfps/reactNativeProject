@@ -24,6 +24,7 @@ import { auth, storage } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useDispatch } from 'react-redux';
+import { authStateChange } from '../redux/auth/authSlice';
 // import RNFetchBlob from 'rn-fetch-blob';
 // import RNFS from 'react-native-fs';
 
@@ -64,8 +65,8 @@ export const RegistrationScreen = () => {
         avatar,
       };
       console.log('object1 :>> ', newUser);
-      dispatch(signUpUser(newUser));
-      // dispatch(authSignUpUser(newUser));
+      dispatch(signUpUser({ login, email, password, avatar }));
+      dispatch(authStateChange({ stateChange: true }));
 
       // const newUser = {
       //   avatarImage: avatar,
@@ -82,7 +83,7 @@ export const RegistrationScreen = () => {
 
     console.log('Registration data :>> ', { data });
 
-    navigation.navigate('Posts');
+    // navigation.navigate('Posts');
 
     reset();
   };
@@ -239,14 +240,6 @@ export const RegistrationScreen = () => {
 
                   <Controller
                     control={control}
-                    rules={{
-                      required: "Це обов'язкове поле",
-                      pattern: {
-                        value:
-                          /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                        message: 'Введіть коректну адресу електронної пошти',
-                      },
-                    }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         style={{ ...styles.input, marginBottom: 16 }}

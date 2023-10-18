@@ -12,11 +12,14 @@ import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
 import { useNavigation } from '@react-navigation/native';
 import AuthStack from './AuthStack';
 import { PostsScreen } from '../Screens/PostsScreen';
+import { signOutUser } from '../redux/auth/authOperation';
+import { useDispatch } from 'react-redux';
 
 const Tabs = createBottomTabNavigator();
 
 export default function BottomTabsNavigator() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   return (
     <Tabs.Navigator
       initialRouteName="Posts"
@@ -73,7 +76,12 @@ export default function BottomTabsNavigator() {
             <TouchableOpacity style={{ marginRight: 16 }}>
               <SvgLogOut
                 onPress={
-                  () => navigation.navigate('AuthStack', { screen: 'Login' })
+                  // () => navigation.navigate('AuthStack', { screen: 'Login' })
+
+                  () => {
+                    console.log('test');
+                    dispatch(signOutUser());
+                  }
                   //   navigation.navigate('AuthStack', {
                   //     screen: 'Registration',
                   //   })

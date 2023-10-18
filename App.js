@@ -12,11 +12,13 @@ import { MapScreen } from './Screens/MapScreen';
 // import { Home } from './Screens/Home';
 import { StatusBar } from 'react-native';
 import Home from './navigation/Home';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/store';
 import { Text } from 'react-native';
 import AuthStack from './navigation/AuthStack';
+import { stateChangeUser } from './redux/auth/authOperation';
+import Main from './navigation/Main';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,15 +31,15 @@ export default function App() {
     return null;
   }
 
-  // const MainStack = createStackNavigator();
-
   return (
     <Provider store={store}>
       <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
-        <NavigationContainer>
-          {/* <Home /> */}
-          <AuthStack />
-        </NavigationContainer>
+        <Main />
+        {/* <NavigationContainer> */}
+        {/* {stateChange ? <Home /> : <AuthStack />} */}
+        {/* <Home /> */}
+        {/* <AuthStack /> */}
+        {/* </NavigationContainer> */}
       </PersistGate>
     </Provider>
   );

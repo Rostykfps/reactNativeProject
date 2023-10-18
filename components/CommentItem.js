@@ -9,14 +9,20 @@ const CommentItem = ({ avatar, comment, date, owner }) => {
     <View
       style={[
         styles.itemWrapper,
-        owner ? styles.notOwnerItemWrapper : styles.ownerItemWrapper,
+        // owner ? styles.notOwnerItemWrapper : styles.ownerItemWrapper,
+        owner ? styles.ownerItemWrapper : styles.notOwnerItemWrapper,
       ]}
     >
-      <Image source={{ avatar }} style={styles.avatar} />
+      {avatar ? (
+        <Image source={{ uri: avatar }} style={styles.avatar} />
+      ) : (
+        <Image source={{ avatar }} style={styles.avatar} />
+      )}
       <View
         style={[
           styles.commentWrapper,
-          owner ? styles.ownerCommentWrapper : styles.notOwnerCommentWrapper,
+          // owner ? styles.ownerCommentWrapper : styles.notOwnerCommentWrapper,
+          owner ? styles.notOwnerCommentWrapper : styles.ownerCommentWrapper,
         ]}
       >
         <Text style={styles.commentText}>{comment}</Text>
