@@ -79,7 +79,6 @@ export default function BottomTabsNavigator() {
                   // () => navigation.navigate('AuthStack', { screen: 'Login' })
 
                   () => {
-                    console.log('test');
                     dispatch(signOutUser());
                   }
                   //   navigation.navigate('AuthStack', {

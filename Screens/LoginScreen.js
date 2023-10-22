@@ -41,7 +41,7 @@ export const LoginScreen = () => {
 
   const onLogin = data => {
     Keyboard.dismiss();
-    console.log('Login data :>> ', data);
+
     const { email, password } = data;
     dispatch(signInUser({ email, password }));
 

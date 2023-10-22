@@ -2,63 +2,90 @@ import { Image } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import CommentItem from '../components/CommentItem';
 import { FlatList } from 'react-native';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { TextInput } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
 import SvgSendIcon from '../assets/svg/SvgSendIcon';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import { db } from '../firebase/config';
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from 'firebase/firestore';
+import { useEffect } from 'react';
 
 export const CommentsScreen = ({ route }) => {
-  const { image } = route.params;
-  console.log('image2 :>> ', image);
+  const { postImage, userPostId, postId, commentsQuantity = 0 } = route.params;
 
-  const { avatar } = useSelector(state => state.auth);
-  console.log('avatar1 :>> ', avatar);
+  const { avatar, userId } = useSelector(state => state.auth);
 
-  const [comments, setComments] = useState([
-    {
-      authorAvatar: null,
-      comment:
-        'Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!',
-      commentDate: '09 червня, 2020 | 08:40',
-      owner: false,
-    },
-    {
-      authorAvatar: avatar,
-      comment:
-        'A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.',
-      commentDate: '09 червня, 2020 | 09:14',
-      owner: true,
-    },
-    {
-      authorAvatar: null,
-      comment: 'Thank you! That was very helpful!',
-      commentDate: '09 червня, 2020 | 09:20',
-      owner: false,
-    },
-  ]);
+  const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
 
+  const getAllComments = async () => {
+    try {
+      const commentsRef = await doc(db, 'posts', postId);
+
+      onSnapshot(collection(commentsRef, 'comments'), snapshot => {
+        setComments(
+          snapshot.docs
+            .map(doc => ({ ...doc.data() }))
+            .sort((firstDate, secondDate) =>
+              firstDate.commentDate.localeCompare(secondDate.commentDate),
+            ),
+        );
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  const uploadCommentToBd = async data => {
+    try {
+      const postDocRef = await doc(db, 'posts', postId);
+      await addDoc(collection(postDocRef, 'comments'), data);
+      await updateDoc(postDocRef, { commentsQuantity: commentsQuantity + 1 });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const flatListRef = useRef(null);
+
   const handleAddComment = () => {
+    console.log('userPostId === userId :>> ', userPostId, userId);
     const newComment = {
       authorAvatar: avatar,
       comment: commentText,
       commentDate: moment().format('DD MMMM, YYYY | HH:mm'),
-      owner: true,
+      owner: userPostId === userId,
     };
     if (!commentText) {
       return;
     }
-    setComments(prev => [...prev, newComment]);
+
+    // setComments(prev => [...prev, newComment]);
+    uploadCommentToBd(newComment);
     setCommentText('');
+
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
   };
 
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: image }}
+        source={{ uri: postImage }}
         style={{
           marginTop: 32,
           marginBottom: 32,
@@ -69,6 +96,7 @@ export const CommentsScreen = ({ route }) => {
       />
       <FlatList
         data={comments}
+        ref={flatListRef}
         renderItem={({ item }) => (
           <CommentItem
             avatar={item.authorAvatar}

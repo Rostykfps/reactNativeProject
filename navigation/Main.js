@@ -10,12 +10,11 @@ export default function Main() {
 
   const { stateChange } = useSelector(state => state.auth);
   const test = useSelector(state => state.auth);
-  console.log('stateChange1 :>> ', test);
+
   // const stateChange = useSelector(state => state.auth.stateChange);
 
   useEffect(() => {
     // dispatch(signOutUser());
-    console.log('stateChange :>> ', stateChange);
     dispatch(stateChangeUser());
   }, []);
   return (

@@ -27,11 +27,14 @@ import { useDispatch } from 'react-redux';
 import { authStateChange } from '../redux/auth/authSlice';
 // import RNFetchBlob from 'rn-fetch-blob';
 // import RNFS from 'react-native-fs';
+// import { FileSystem } from 'expo';
+// import { FileSystem } from 'expo-file-system';
+// import * as FileSystem from 'expo-file-system';
 
 export const RegistrationScreen = () => {
-  const [login, setLogin] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  // const [login, setLogin] = useState(null);
+  // const [email, setEmail] = useState(null);
+  // const [password, setPassword] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [isSecure, setIsSecure] = useState(true);
 
@@ -42,9 +45,9 @@ export const RegistrationScreen = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      login: '',
-      email: '',
-      password: '',
+      login: 'Test',
+      email: 'test@test.te',
+      password: 'Test1234!',
     },
   });
 
@@ -54,34 +57,22 @@ export const RegistrationScreen = () => {
   const onRegistration = async data => {
     const { login, email, password } = data;
     Keyboard.dismiss();
-    console.log(avatar);
 
     try {
-      avatar && (await uploadAvatarToDb(avatar));
+      // avatar && (await uploadAvatarToDb(avatar));
+      const avatarUrl = avatar ? await uploadAvatarToDb(avatar) : '';
       const newUser = {
         login,
         email,
         password,
-        avatar,
+        avatar: avatarUrl,
       };
-      console.log('object1 :>> ', newUser);
-      dispatch(signUpUser({ login, email, password, avatar }));
+      // dispatch(signUpUser({ login, email, password, avatar }));
+      dispatch(signUpUser(newUser));
       dispatch(authStateChange({ stateChange: true }));
-
-      // const newUser = {
-      //   avatarImage: avatar,
-      //   login,
-      //   email,
-      //   password,
-      // };
-      // console.log('object1 :>> ', newUser);
-      // dispatch(authSignUpUser(newUser));
     } catch (error) {
-      console.log('error :>> ', error);
       return error.message;
     }
-
-    console.log('Registration data :>> ', { data });
 
     // navigation.navigate('Posts');
 
@@ -136,38 +127,52 @@ export const RegistrationScreen = () => {
 
   const uploadAvatarToDb = async avatar => {
     if (avatar) {
-      console.log('avatar :>> ', avatar);
-      const avatarId = Date.now().toString();
+      // const avatarId = Date.now().toString();
+
       try {
-        // const picture = await fetch(avatar.replace('file:///', ''));
-        // console.log('picture :>> ', picture);
-        // console.log('test');
-        // const response = await fetch(avatar);
-        // const response = await fetch(
-        //   'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252FreactNativeProject-227d88aa-d0a8-4283-8e95-dfc92a59b734/ImagePicker/c33545be-df90-48ea-a857-463f762b2e94.jpeg',
-        // );
+        const file = await uriToBlob(avatar);
 
-        // const file = await response.blob();
-        // const file = await avatar.blob();
-        // const file = await RNFetchBlob.fs.readFile(avatar, 'base64');
+        const fileName = avatar.split('/').pop();
 
-        // const file = await RNFS.readFile(avatar, 'base64');
+        const storageRef = ref(storage, `avatars/${fileName}`);
 
-        // console.log('file :>> ', file);
+        await uploadBytes(storageRef, file);
 
-        const storageRef = ref(storage, `avatars/${avatarId}`);
+        const downloadURL = await getDownloadURL(storageRef);
 
-        // await uploadBytes(storageRef, file);
-
-        // const downloadURL = await getDownloadURL(storageRef);
-        // console.log('downloadURL :>> ', downloadURL);
-
-        // return downloadURL;
+        return downloadURL;
       } catch (error) {
         console.warn('uploadImageToServer: ', error);
       }
     }
   };
+
+  function uriToBlob(avatar) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      // If successful -> return with blob
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+
+      // reject on error
+      xhr.onerror = function () {
+        reject(new Error('uriToBlob failed'));
+      };
+
+      // Set the response type to 'blob' - this means the server's response
+      // will be accessed as a binary object
+      xhr.responseType = 'blob';
+
+      // Initialize the request. The third argument set to 'true' denotes
+      // that the request is asynchronous
+      xhr.open('GET', avatar, true);
+
+      // Send the request. The 'null' argument means that no body content is given for the request
+      xhr.send(null);
+    });
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

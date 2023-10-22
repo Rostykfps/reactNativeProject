@@ -19,22 +19,31 @@ import SvgTrash from '../assets/svg/SvgTrash';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
+import { useSelector } from 'react-redux';
+import { Alert } from 'react-native';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 export const CreatePostsScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
-  const [imageUri, setImageUri] = useState(null);
+  const [postImage, setPostImage] = useState(null);
   const [cameraVisible, setCameraVisible] = useState(true);
+  const [postId, setPostId] = useState('');
   const [formData, setFormData] = useState({
-    id: '',
-    name: '',
+    postId: '',
+    userId: '',
+    postName: '',
     location: '',
-    imageUri: null,
+    postImage: null,
     locationCoords: {},
+    // commentsQuantity: 0,
   });
   const [isFormValid, setIsFormValid] = useState(false);
   const [locationCoords, setLocationCoords] = useState('');
   const [activeBtn, setActiveBtn] = useState(false);
+
+  const { userId, login } = useSelector(state => state.auth);
 
   const navigation = useNavigation();
 
@@ -61,12 +70,12 @@ export const CreatePostsScreen = () => {
 
     if (cameraRef && cameraVisible) {
       const { uri } = await cameraRef.takePictureAsync();
-      setImageUri(uri);
+      setPostImage(uri);
       await MediaLibrary.createAssetAsync(uri);
 
       setFormData({
         ...formData,
-        imageUri: uri,
+        postImage: uri,
       });
 
       setCameraVisible(!cameraVisible);
@@ -81,8 +90,8 @@ export const CreatePostsScreen = () => {
   };
 
   const checkFormValidity = () => {
-    const { name, location } = formData;
-    if (!cameraVisible && name && location) {
+    const { postName, location } = formData;
+    if (!cameraVisible && postName && location) {
       setIsFormValid(true);
       setActiveBtn(true);
       return;
@@ -108,21 +117,37 @@ export const CreatePostsScreen = () => {
 
   const handleClearForm = () => {
     setFormData({
-      id: '',
-      name: '',
+      postId: '',
+      userId: '',
+      postName: '',
       location: '',
-      imageUri: '',
+      postImage: '',
       locationCoords: {},
     });
-    setImageUri(null);
+    setPostImage(null);
     setCameraVisible(true);
+  };
+
+  const uploadPostToDb = async data => {
+    try {
+      const postRef = await addDoc(collection(db, 'posts'), data);
+      setPostId(postRef.id);
+      Alert.alert(`Пост опубліковано`);
+      return postRef.id;
+    } catch (error) {
+      return error.message;
+    }
   };
 
   const handleSubmit = async () => {
     setActiveBtn(false);
     await getLocation();
-    const id = uuidv4();
-    formData.id = id;
+
+    await uploadPostToDb({
+      ...formData,
+      userId,
+    });
+    // console.log('postRef.id2 :>> ', postRef.id);
     navigation.navigate('Posts', { formData });
 
     handleClearForm();
@@ -140,16 +165,16 @@ export const CreatePostsScreen = () => {
       </View> */}
       <ScrollView>
         <View style={{ paddingLeft: 16, paddingRight: 16 }}>
-          {/* {imageUri ? (
+          {/* {postImage ? (
             <>
               <View style={styles.photoWrapper}>
                 <Image
-                  source={{ uri: imageUri }}
+                  source={{ uri: postImage }}
                   style={{ width: '100%', height: '100%' }}
                 />
                 <TouchableOpacity
                   style={styles.iconWrapper}
-                  // onPress={setImageUri(null)}
+                  // onPress={setPostImage(null)}
                 >
                   <SvgCameraIcon />
                 </TouchableOpacity>
@@ -177,7 +202,7 @@ export const CreatePostsScreen = () => {
               <Camera style={styles.camera} ref={setCameraRef} />
             ) : (
               <Image
-                source={{ uri: imageUri }}
+                source={{ uri: postImage }}
                 style={{ width: '100%', height: '100%' }}
               />
             )}
@@ -194,8 +219,8 @@ export const CreatePostsScreen = () => {
             placeholderTextColor="#BDBDBD"
             placeholder="Назва..."
             // name="name"
-            value={formData.name}
-            onChangeText={text => handleInputChange('name', text)}
+            value={formData.postName}
+            onChangeText={text => handleInputChange('postName', text)}
           />
           <View style={{ marginTop: 16, paddingTop: 10 }}>
             <View style={{}}>

@@ -4,27 +4,36 @@ import { TouchableOpacity } from 'react-native';
 import SvgMapPin from '../assets/svg/SvgMapPin';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
+import SvgCommentsIconActive from '../assets/svg/SvgCommentsIconActive';
 
-const PostItem = ({ name, image, location, coordinates }) => {
+const PostItem = ({
+  postName,
+  postImage,
+  location,
+  coordinates,
+  userPostId,
+  postId,
+  commentsQuantity = 0,
+}) => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.postWrapper}>
-      <Image source={{ uri: image }} style={styles.postImage} />
-      <Text style={styles.postName}>{name}</Text>
+      <Image source={{ uri: postImage }} style={styles.postImage} />
+      <Text style={styles.postName}>{postName}</Text>
       <View style={styles.postData}>
         <View style={styles.directionRow}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('PostStack', {
                 screen: 'Comments',
-                params: { image },
+                params: { postImage, userPostId, postId, commentsQuantity },
               })
             }
           >
-            <SvgCommentsIcon />
+            {commentsQuantity ? <SvgCommentsIconActive /> : <SvgCommentsIcon />}
           </TouchableOpacity>
-          <Text style={styles.commentsText}>0</Text>
+          <Text style={styles.commentsText}>{commentsQuantity}</Text>
         </View>
         <View style={styles.directionRow}>
           <TouchableOpacity
