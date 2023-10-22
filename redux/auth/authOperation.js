@@ -73,7 +73,6 @@ export const stateChangeUser = () => async dispatch => {
   await onAuthStateChanged(auth, user => {
     try {
       if (user) {
-        // console.log('user :>> ', user);
         const userUpdateProfile = {
           userId: user.uid,
           login: user.displayName,

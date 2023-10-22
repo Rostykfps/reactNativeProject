@@ -62,7 +62,6 @@ export const CommentsScreen = ({ route }) => {
   const flatListRef = useRef(null);
 
   const handleAddComment = () => {
-    console.log('userPostId === userId :>> ', userPostId, userId);
     const newComment = {
       authorAvatar: avatar,
       comment: commentText,

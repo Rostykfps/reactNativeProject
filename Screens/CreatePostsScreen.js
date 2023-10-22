@@ -147,7 +147,6 @@ export const CreatePostsScreen = () => {
       ...formData,
       userId,
     });
-    // console.log('postRef.id2 :>> ', postRef.id);
     navigation.navigate('Posts', { formData });
 
     handleClearForm();
