@@ -22,15 +22,21 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "config":{
-        "googleMaps":{
+      "config": {
+        "googleMaps": {
           "apiKey": "AIzaSyBKUZKEd3QQvfXGTGssm06pWrV6aNioLe0"
         }
-      }
+      },
+      "package": "com.asd75.reactNativeProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "android.config.googleMaps.apiKey": "AIzaSyBKUZKEd3QQvfXGTGssm06pWrV6aNioLe0"
+    // "android.config.googleMaps.apiKey": "AIzaSyBKUZKEd3QQvfXGTGssm06pWrV6aNioLe0",
+    "extra": {
+      "eas": {
+        "projectId": "d632b101-2c51-47b9-bb80-3635c474172a"
+      }
+    }
   }
 }
