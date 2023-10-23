@@ -25,16 +25,11 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useDispatch } from 'react-redux';
 import { authStateChange } from '../redux/auth/authSlice';
-// import RNFetchBlob from 'rn-fetch-blob';
-// import RNFS from 'react-native-fs';
-// import { FileSystem } from 'expo';
-// import { FileSystem } from 'expo-file-system';
-// import * as FileSystem from 'expo-file-system';
 
 export const RegistrationScreen = () => {
-  // const [login, setLogin] = useState(null);
-  // const [email, setEmail] = useState(null);
-  // const [password, setPassword] = useState(null);
+  const [login, setLogin] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const [isSecure, setIsSecure] = useState(true);
 

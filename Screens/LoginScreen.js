@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     minHeight: screenSize.height,
+    // width: screenSize.width,
     justifyContent: 'flex-end',
   },
   formWrapper: {
@@ -257,7 +258,8 @@ const styles = StyleSheet.create({
     color: '#212121',
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
-    width: '100%',
+    // width: '100%',
+    width: screenSize.width-32,
   },
   showPassword: {
     color: '#1B4371',

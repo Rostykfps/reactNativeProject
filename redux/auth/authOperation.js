@@ -19,7 +19,6 @@ export const signUpUser =
       await updateProfile(auth.currentUser, {
         displayName: login,
         photoURL: avatar,
-        // photoURL: avatarImage,
       });
       const { uid, displayName, photoURL } = auth.currentUser;
 

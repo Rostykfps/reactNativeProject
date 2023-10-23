@@ -1,12 +1,130 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { Dimensions } from 'react-native';
+import { Keyboard } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import {
+  Animated,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import SvgLogOut from '../assets/svg/SvgLogOut';
+import { signOutUser } from '../redux/auth/authOperation';
 
 export const ProfileScreen = () => {
+  const { avatar } = useSelector(state => state.auth);
+
+  const [userAvatar, setUserAvatar] = useState(avatar || null);
+  // const [shift, setShift] = useState(false);
+  // const [position] = useState(new Animated.Value(0));
+
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   Animated.timing(position, {
+  //     toValue: shift ? 90 : 78,
+  //     duration: 300,
+  //     useNativeDriver: false,
+  //   }).start();
+  // }, [shift]);
+
+  const pickAvatar = async () => {
+    if (userAvatar) {
+      setUserAvatar(null);
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setUserAvatar(result.assets[0].uri);
+    }
+  };
+
   return (
+    // <View style={styles.container}>
+
+    // <Text>ProfileScreen</Text> */
+
     <View style={styles.container}>
-      <Text>ProfileScreen</Text>
+      {/* <StatusBar style="auto" /> */}
+      <ImageBackground
+        style={styles.backgroundImage}
+        source={require('../assets/images/photo-bg.jpg')}
+      >
+        {/* <Animated.View
+                style={[
+                  styles.formWrapper,
+                  // , { paddingBottom: position }
+                ]}
+              > */}
+        <View style={styles.listWrapper}>
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              top: 22,
+              // left: 0,
+              right: 16,
+              // width: 50,
+              // height: 50,
+              // backgroundColor: 'red',
+            }}
+          >
+            <SvgLogOut onPress={() => dispatch(signOutUser())} />
+          </TouchableOpacity>
+          <View style={styles.addPhoto}>
+            <Image style={styles.avatar} source={{ uri: avatar }} />
+            <TouchableOpacity
+              style={styles.avatarBtnWrapper}
+              onPress={pickAvatar}
+            >
+              {userAvatar ? (
+                <Image
+                  style={styles.delBtn}
+                  source={require('../assets/images/del-btn.png')}
+                />
+              ) : (
+                <Image
+                  style={styles.addBtn}
+                  source={require('../assets/images/add-btn.png')}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* <Text style={styles.title}>Реєстрація</Text> */}
+
+          <View style={{ width: '100%' }}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContainer}
+              bounces={false}
+            >
+              <Text style={styles.title}>ProfileScreen</Text>
+            </ScrollView>
+          </View>
+        </View>
+        {/* </Animated.View> */}
+      </ImageBackground>
     </View>
+
+    // </View>
   );
 };
+
+const screenSize = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
@@ -17,4 +135,127 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     backgroundColor: '#FFF',
   },
+  // container: {
+  //   flex: 1,
+  // },
+  backgroundImage: {
+    flex: 1,
+    top: 0,
+    position: 'absolute',
+    height: screenSize.height,
+    width: screenSize.width,
+    resizeMode: 'cover',
+  },
+  listWrapper: {
+    minHeight: screenSize.height - 103,
+    marginTop: 103,
+    flexDirection: 'column',
+    alignItems: 'center',
+    // justifyContent: 'center',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingTop: 92,
+    paddingRight: 16,
+    paddingLeft: 16,
+    paddingBottom: 46,
+  },
+  addPhoto: {
+    width: 120,
+    height: 120,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    top: -60,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    position: 'absolute',
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    // top: -60,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    position: 'absolute',
+  },
+  avatarBtnWrapper: {
+    position: 'absolute',
+    width: 25,
+    height: 25,
+    top: 81,
+    left: 107,
+    borderRadius: 100,
+  },
+  addBtn: {
+    position: 'absolute',
+    // top: 81,
+    // left: 107,
+  },
+  delBtn: {
+    position: 'absolute',
+    left: -6,
+    top: -6,
+  },
+
+  title: {
+    marginBottom: 33,
+    color: '#212121',
+    fontFamily: 'Roboto-Medium',
+    fontSize: 30,
+    letterSpacing: 0.3,
+    textAlign: 'center',
+  },
+  input: {
+    height: 50,
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+    color: '#212121',
+    fontFamily: 'Roboto-Regular',
+    fontSize: 16,
+    width: '100%',
+  },
+  // scrollViewContainer: {
+  //   minHeight: screenSize.height,
+  //   justifyContent: 'flex-end',
+  // },
+  // showPassword: {
+  //   color: '#1B4371',
+  //   fontFamily: 'Roboto-Regular',
+  //   fontSize: 16,
+  //   position: 'absolute',
+  //   right: 16,
+  //   bottom: 14,
+  // },
+  // registerBtn: {
+  //   textAlign: 'center',
+  //   backgroundColor: '#FF6C00',
+  //   borderRadius: 100,
+  //   width: '100%',
+  //   paddingHorizontal: 32,
+  //   paddingVertical: 16,
+  //   marginTop: 43,
+  //   marginBottom: 16,
+  //   color: '#fff',
+  //   fontFamily: 'Roboto-Regular',
+  //   fontSize: 16,
+  // },
+  // text: {
+  //   color: '#1B4371',
+  //   textAlign: 'center',
+  //   fontFamily: 'Roboto-Regular',
+  //   fontSize: 16,
+  // },
 });
