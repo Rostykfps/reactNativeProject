@@ -19,15 +19,24 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import SvgLogOut from '../assets/svg/SvgLogOut';
 import { signOutUser } from '../redux/auth/authOperation';
+import { uploadAvatarToDb } from '../utils/uploadAvatarToDb';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { db } from '../firebase/config';
+import { FlatList } from 'react-native';
+import PostItem from '../components/PostItem';
+import SvgArrowLeft from '../assets/svg/SvgArrowLeft';
+import { useNavigation } from '@react-navigation/native';
 
 export const ProfileScreen = () => {
-  const { avatar } = useSelector(state => state.auth);
+  const { avatar, login, userId } = useSelector(state => state.auth);
 
   const [userAvatar, setUserAvatar] = useState(avatar || null);
+  const [posts, setPosts] = useState([]);
   // const [shift, setShift] = useState(false);
   // const [position] = useState(new Animated.Value(0));
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   // useEffect(() => {
   //   Animated.timing(position, {
@@ -51,8 +60,24 @@ export const ProfileScreen = () => {
 
     if (!result.canceled) {
       setUserAvatar(result.assets[0].uri);
+      uploadAvatarToDb(userAvatar);
     }
   };
+
+  const getAllPosts = async () => {
+    try {
+      const ref = query(collection(db, 'posts'));
+      onSnapshot(ref, snapshot => {
+        setPosts(snapshot.docs.map(doc => ({ ...doc.data(), postId: doc.id })));
+      });
+    } catch (error) {
+      console.log('error-message', error.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   return (
     // <View style={styles.container}>
@@ -72,21 +97,17 @@ export const ProfileScreen = () => {
                 ]}
               > */}
         <View style={styles.listWrapper}>
+          <TouchableOpacity style={{ position: 'absolute', top: 22, left: 16 }}>
+            <SvgArrowLeft onPress={() => navigation.goBack()} />
+          </TouchableOpacity>
+
           <TouchableOpacity
-            style={{
-              position: 'absolute',
-              top: 22,
-              // left: 0,
-              right: 16,
-              // width: 50,
-              // height: 50,
-              // backgroundColor: 'red',
-            }}
+            style={{ position: 'absolute', top: 22, right: 16 }}
           >
             <SvgLogOut onPress={() => dispatch(signOutUser())} />
           </TouchableOpacity>
           <View style={styles.addPhoto}>
-            <Image style={styles.avatar} source={{ uri: avatar }} />
+            <Image style={styles.avatar} source={{ uri: userAvatar }} />
             <TouchableOpacity
               style={styles.avatarBtnWrapper}
               onPress={pickAvatar}
@@ -104,16 +125,34 @@ export const ProfileScreen = () => {
               )}
             </TouchableOpacity>
           </View>
-
-          {/* <Text style={styles.title}>Реєстрація</Text> */}
-
           <View style={{ width: '100%' }}>
-            <ScrollView
+            {/* <ScrollView
               contentContainerStyle={styles.scrollViewContainer}
               bounces={false}
-            >
-              <Text style={styles.title}>ProfileScreen</Text>
-            </ScrollView>
+            > */}
+            <Text style={styles.title}>{login}</Text>
+
+            <FlatList
+              data={posts}
+              renderItem={({ item }) => (
+                // <View>
+                <PostItem
+                  postName={item.postName}
+                  postImage={item.postImage}
+                  location={item.location}
+                  coordinates={item.locationCoords}
+                  userPostId={item.userId}
+                  postId={item.postId}
+                  commentsQuantity={item.commentsQuantity}
+                  likesQuantity={item.likesQuantity}
+                  profileScreen={true}
+                  userId={userId}
+                />
+                // </View>
+              )}
+              keyExtractor={(item, idx) => idx.toString()}
+            />
+            {/* </ScrollView> */}
           </View>
         </View>
         {/* </Animated.View> */}
@@ -147,18 +186,18 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   listWrapper: {
-    minHeight: screenSize.height - 103,
-    marginTop: 103,
+    minHeight: screenSize.height - 88,
+    marginTop: 88,
     flexDirection: 'column',
     alignItems: 'center',
     // justifyContent: 'center',
     backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingTop: 92,
+    paddingTop: 87,
     paddingRight: 16,
     paddingLeft: 16,
-    paddingBottom: 46,
+    paddingBottom: 134,
   },
   addPhoto: {
     width: 120,
@@ -207,7 +246,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginBottom: 33,
+    marginBottom: 28,
     color: '#212121',
     fontFamily: 'Roboto-Medium',
     fontSize: 30,

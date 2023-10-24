@@ -5,6 +5,18 @@ import SvgMapPin from '../assets/svg/SvgMapPin';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import SvgCommentsIconActive from '../assets/svg/SvgCommentsIconActive';
+import SvgLike from '../assets/svg/SvgLike';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
+import { db } from '../firebase/config';
+import { useEffect, useState } from 'react';
 
 const PostItem = ({
   postName,
@@ -14,8 +26,60 @@ const PostItem = ({
   userPostId,
   postId,
   commentsQuantity = 0,
+  likesQuantity = 0,
+  profileScreen = false,
+  userId,
 }) => {
+  const [likes, setLikes] = useState([]);
+  const [likeStatus, setLikeStatus] = useState(false);
+
   const navigation = useNavigation();
+
+  const getAllLikes = async () => {
+    try {
+      const ref = query(collection(db, 'posts', postId, 'likes'));
+      onSnapshot(ref, snapshot => {
+        setLikes(snapshot.docs.map(doc => ({ ...doc.data(), likeId: doc.id })));
+        // console.log(
+        //   'object :>> ',
+        //   snapshot.docs.map(doc => doc.data()),
+        // );
+        // setLikes(snapshot.docs.map(doc => doc.data()));
+      });
+    } catch (error) {
+      console.log('error-message', error.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllLikes();
+  }, []);
+
+  const addLike = async postId => {
+    try {
+      const likeStatus = likes.find(status => status[userId]);
+      setLikeStatus(likeStatus);
+
+      const postDocRef = await doc(db, 'posts', postId);
+      if (likeStatus) {
+        const likeDocRef = doc(db, 'posts', postId, 'likes', likeStatus.likeId);
+
+        await deleteDoc(likeDocRef);
+
+        await updateDoc(postDocRef, {
+          likesQuantity: likesQuantity - 1,
+        });
+        setLikeStatus(false);
+        return;
+      }
+
+      await addDoc(collection(postDocRef, 'likes'), { [userId]: true });
+      await updateDoc(postDocRef, { likesQuantity: likesQuantity + 1 });
+      setLikeStatus(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <View style={styles.postWrapper}>
@@ -33,7 +97,34 @@ const PostItem = ({
           >
             {commentsQuantity ? <SvgCommentsIconActive /> : <SvgCommentsIcon />}
           </TouchableOpacity>
-          <Text style={styles.commentsText}>{commentsQuantity}</Text>
+          <Text
+            style={
+              commentsQuantity ? styles.activeCommentsText : styles.commentsText
+            }
+          >
+            {commentsQuantity}
+          </Text>
+          {profileScreen && (
+            <>
+              <TouchableOpacity
+                style={{ marginLeft: 24 }}
+                onPress={() => {
+                  addLike(postId);
+                }}
+              >
+                <SvgLike color={likeStatus ? '#FF6C00' : '#BDBDBD'} />
+              </TouchableOpacity>
+              <Text
+                style={
+                  likesQuantity
+                    ? styles.activeCommentsText
+                    : styles.commentsText
+                }
+              >
+                {likesQuantity}
+              </Text>
+            </>
+          )}
         </View>
         <View style={styles.directionRow}>
           <TouchableOpacity
@@ -84,6 +175,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     marginLeft: 6,
   },
+
+  activeCommentsText: {
+    color: '#212121',
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular',
+    marginLeft: 6,
+  },
+
   locationText: {
     color: '#212121',
     fontSize: 16,

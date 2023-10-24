@@ -25,6 +25,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useDispatch } from 'react-redux';
 import { authStateChange } from '../redux/auth/authSlice';
+import { uploadAvatarToDb } from '../utils/uploadAvatarToDb';
 
 export const RegistrationScreen = () => {
   const [login, setLogin] = useState(null);
@@ -54,7 +55,6 @@ export const RegistrationScreen = () => {
     Keyboard.dismiss();
 
     try {
-      // avatar && (await uploadAvatarToDb(avatar));
       const avatarUrl = avatar ? await uploadAvatarToDb(avatar) : '';
       const newUser = {
         login,
@@ -120,54 +120,54 @@ export const RegistrationScreen = () => {
     }
   };
 
-  const uploadAvatarToDb = async avatar => {
-    if (avatar) {
-      // const avatarId = Date.now().toString();
+  // const uploadAvatarToDb = async avatar => {
+  //   if (avatar) {
+  //     // const avatarId = Date.now().toString();
 
-      try {
-        const file = await uriToBlob(avatar);
+  //     try {
+  //       const file = await uriToBlob(avatar);
 
-        const fileName = avatar.split('/').pop();
+  //       const fileName = avatar.split('/').pop();
 
-        const storageRef = ref(storage, `avatars/${fileName}`);
+  //       const storageRef = ref(storage, `avatars/${fileName}`);
 
-        await uploadBytes(storageRef, file);
+  //       await uploadBytes(storageRef, file);
 
-        const downloadURL = await getDownloadURL(storageRef);
+  //       const downloadURL = await getDownloadURL(storageRef);
 
-        return downloadURL;
-      } catch (error) {
-        console.warn('uploadImageToServer: ', error);
-      }
-    }
-  };
+  //       return downloadURL;
+  //     } catch (error) {
+  //       console.warn('uploadImageToServer: ', error);
+  //     }
+  //   }
+  // };
 
-  function uriToBlob(avatar) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
+  // function uriToBlob(avatar) {
+  //   return new Promise((resolve, reject) => {
+  //     const xhr = new XMLHttpRequest();
 
-      // If successful -> return with blob
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
+  //     // If successful -> return with blob
+  //     xhr.onload = function () {
+  //       resolve(xhr.response);
+  //     };
 
-      // reject on error
-      xhr.onerror = function () {
-        reject(new Error('uriToBlob failed'));
-      };
+  //     // reject on error
+  //     xhr.onerror = function () {
+  //       reject(new Error('uriToBlob failed'));
+  //     };
 
-      // Set the response type to 'blob' - this means the server's response
-      // will be accessed as a binary object
-      xhr.responseType = 'blob';
+  //     // Set the response type to 'blob' - this means the server's response
+  //     // will be accessed as a binary object
+  //     xhr.responseType = 'blob';
 
-      // Initialize the request. The third argument set to 'true' denotes
-      // that the request is asynchronous
-      xhr.open('GET', avatar, true);
+  //     // Initialize the request. The third argument set to 'true' denotes
+  //     // that the request is asynchronous
+  //     xhr.open('GET', avatar, true);
 
-      // Send the request. The 'null' argument means that no body content is given for the request
-      xhr.send(null);
-    });
-  }
+  //     // Send the request. The 'null' argument means that no body content is given for the request
+  //     xhr.send(null);
+  //   });
+  // }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
