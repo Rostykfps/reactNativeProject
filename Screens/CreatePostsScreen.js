@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { Alert } from 'react-native';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import { uploadFileToDb } from '../utils/uploadFileToDb';
 
 export const CreatePostsScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -143,9 +144,14 @@ export const CreatePostsScreen = () => {
     setActiveBtn(false);
     await getLocation();
 
+    const postImageUrl = postImage
+      ? await uploadFileToDb(postImage, 'postImages')
+      : '';
+
     await uploadPostToDb({
       ...formData,
       userId,
+      postImage: postImageUrl,
     });
     navigation.navigate('Posts', { formData });
 

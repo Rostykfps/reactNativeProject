@@ -1,14 +1,14 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../firebase/config';
 
-export const uploadAvatarToDb = async uploadFile => {
+export const uploadFileToDb = async (uploadFile, folderName = 'avatars') => {
   if (uploadFile) {
     try {
       const file = await uriToBlob(uploadFile);
 
       const fileName = uploadFile.split('/').pop();
 
-      const storageRef = ref(storage, `avatars/${fileName}`);
+      const storageRef = ref(storage, `${folderName}/${fileName}`);
 
       await uploadBytes(storageRef, file);
 

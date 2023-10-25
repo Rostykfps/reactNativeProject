@@ -19,7 +19,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import SvgLogOut from '../assets/svg/SvgLogOut';
 import { signOutUser } from '../redux/auth/authOperation';
-import { uploadAvatarToDb } from '../utils/uploadAvatarToDb';
+import { uploadFileToDb } from '../utils/uploadFileToDb';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { FlatList } from 'react-native';
@@ -60,7 +60,7 @@ export const ProfileScreen = () => {
 
     if (!result.canceled) {
       setUserAvatar(result.assets[0].uri);
-      uploadAvatarToDb(userAvatar);
+      uploadFileToDb(userAvatar);
     }
   };
 
@@ -125,7 +125,7 @@ export const ProfileScreen = () => {
               )}
             </TouchableOpacity>
           </View>
-          <View style={{ width: '100%' }}>
+          <View style={{ width: '100%', height: '100%' }}>
             {/* <ScrollView
               contentContainerStyle={styles.scrollViewContainer}
               bounces={false}
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     paddingTop: 87,
     paddingRight: 16,
     paddingLeft: 16,
-    paddingBottom: 134,
+    paddingBottom: 34,
   },
   addPhoto: {
     width: 120,

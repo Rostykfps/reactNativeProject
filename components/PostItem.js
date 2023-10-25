@@ -39,12 +39,14 @@ const PostItem = ({
     try {
       const ref = query(collection(db, 'posts', postId, 'likes'));
       onSnapshot(ref, snapshot => {
-        setLikes(snapshot.docs.map(doc => ({ ...doc.data(), likeId: doc.id })));
-        // console.log(
-        //   'object :>> ',
-        //   snapshot.docs.map(doc => doc.data()),
-        // );
-        // setLikes(snapshot.docs.map(doc => doc.data()));
+        const AllLikes = snapshot.docs.map(doc => ({
+          ...doc.data(),
+          likeId: doc.id,
+        }));
+
+        setLikes(AllLikes);
+        const likeStatus = AllLikes.find(status => status[userId]);
+        setLikeStatus(likeStatus);
       });
     } catch (error) {
       console.log('error-message', error.message);
